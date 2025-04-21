@@ -11,7 +11,6 @@ const char *EMOJI_0[] = {"🙂", "😀", "😃"};
 const char *EMOJI_1[] = {"😌", "😉", "😁"};
 const int EMOJI_SET_SIZE = 3;
 
-// Get file size
 long get_file_size(const char *filename) {
     FILE *file = fopen(filename, "rb");
     if (!file) return -1;
@@ -21,7 +20,6 @@ long get_file_size(const char *filename) {
     return size;
 }
 
-// Convert byte to binary string
 void byte_to_binary(unsigned char byte, char *binary) {
     for (int i = 7; i >= 0; i--) {
         binary[7 - i] = (byte & (1 << i)) ? '1' : '0';
@@ -29,7 +27,6 @@ void byte_to_binary(unsigned char byte, char *binary) {
     binary[8] = '\0';
 }
 
-// Convert binary string to byte
 unsigned char binary_to_byte(const char *binary) {
     unsigned char byte = 0;
     for (int i = 0; i < 8; i++) {
@@ -40,7 +37,6 @@ unsigned char binary_to_byte(const char *binary) {
     return byte;
 }
 
-// Emoji match helper
 int is_emoji(const char *ch, const char **emoji_set) {
     for (int i = 0; i < EMOJI_SET_SIZE; i++) {
         if (strcmp(ch, emoji_set[i]) == 0) return 1;
@@ -48,15 +44,14 @@ int is_emoji(const char *ch, const char **emoji_set) {
     return 0;
 }
 
-// Detect UTF-8 emoji length
 int get_utf8_length(unsigned char c) {
-    if ((c & 0xF8) == 0xF0) return 4; // 11110xxx
-    if ((c & 0xF0) == 0xE0) return 3; // 1110xxxx
-    if ((c & 0xE0) == 0xC0) return 2; // 110xxxxx
-    return 1;                         // 0xxxxxxx
+    if ((c & 0xF8) == 0xF0) return 4; 
+    if ((c & 0xF0) == 0xE0) return 3; 
+    if ((c & 0xE0) == 0xC0) return 2; 
+    return 1;                         
 }
 
-// Encode file using emojis
+
 void encode_file(const char *filename) {
     FILE *in = fopen(filename, "rb");
     if (!in) {
@@ -64,7 +59,7 @@ void encode_file(const char *filename) {
         return;
     }
 
-    FILE *out = fopen(ENCODED_FILE, "w, ccs=UTF-8");  // Unicode text
+    FILE *out = fopen(ENCODED_FILE, "w, ccs=UTF-8");  
     if (!out) {
         printf("Error creating encoded file!\n");
         fclose(in);
@@ -96,7 +91,6 @@ void encode_file(const char *filename) {
     printf("Encoded File Size: %ld bytes\n", encoded_size);
 }
 
-// Decode emoji back into binary
 void decode_file() {
     FILE *in = fopen(ENCODED_FILE, "rb");
     if (!in) {
@@ -128,7 +122,7 @@ void decode_file() {
     while (i < file_size) {
         int len = get_utf8_length((unsigned char)buffer[i]);
 
-        if (i + len > file_size) break; // prevent overflow
+        if (i + len > file_size) break; 
 
         strncpy(emoji, &buffer[i], len);
         emoji[len] = '\0';
@@ -160,7 +154,7 @@ void decode_file() {
     printf("Decoded File Size: %ld bytes\n", decoded_size);
 }
 
-// Main menu
+
 int main() {
     int choice;
     char filename[256];
@@ -172,7 +166,7 @@ int main() {
         printf("3. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
-        getchar();  // consume newline
+        getchar();  
 
         switch (choice) {
             case 1:
